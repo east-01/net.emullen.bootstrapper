@@ -1,5 +1,4 @@
 # Ignore specific files and directories that shouldn't be tracked
-*.meta
 /Editor/*.cs.meta
 /Editor/*.meta
 /Runtime/*.cs.meta
