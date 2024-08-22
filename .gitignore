@@ -1,0 +1,51 @@
+# Ignore specific files and directories that shouldn't be tracked
+*.meta
+/Editor/*.cs.meta
+/Editor/*.meta
+/Runtime/*.cs.meta
+/Runtime/*.meta
+/Runtime/SampleScripts/*.cs.meta
+/Runtime/SampleScripts/*.meta
+
+# Ignore Visual Studio and Rider project files
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+
+# Ignore Unity auto-generated files
+*.pidb
+*.booproj
+*.sln
+*.user
+*.userprefs
+*.csproj
+*.unityproj
+*.suo
+*.tmp
+*.svd
+
+# Ignore temp files
+[Dd]ebug/
+[Oo]bj/
+[Bb]in/
+Temp/
+Logs/
+
+# Ignore system files
+.DS_Store
+*.apk
+*.apk.meta
+*.zip
+*.zip.meta

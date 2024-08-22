@@ -1,0 +1,17 @@
+{
+    "name": "Bootstrapper",
+    "rootNamespace": "EMullen.Bootstrapper",
+    "references": [
+        "Unity.TextMeshPro",
+        "UnityEditor"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

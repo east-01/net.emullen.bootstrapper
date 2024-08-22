@@ -1,0 +1,18 @@
+{
+  "name": "net.emullen.bootstrapper",
+  "version": "1.0.0",
+  "displayName": "Bootstrapper",
+  "description": "A bootstrapping system that allows you to ensure important GameObjects are loaded before game scenes.",
+  "unity": "2021.3",
+  "unityRelease": "17f1",
+  "documentationUrl": "",
+  "changelogUrl": "",
+  "licensesUrl": "",
+  "dependencies": {},
+  "keywords": [],
+  "author": {
+    "name": "Ethan Mullen",
+    "email": "mullen.ethan@yahoo.com",
+    "url": "https://www.emullen.net"
+  }
+}
