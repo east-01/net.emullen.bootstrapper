@@ -1,12 +1,3 @@
-# Ignore specific files and directories that shouldn't be tracked
-*.meta
-/Editor/*.cs.meta
-/Editor/*.meta
-/Runtime/*.cs.meta
-/Runtime/*.meta
-/Runtime/SampleScripts/*.cs.meta
-/Runtime/SampleScripts/*.meta
-
 # Ignore Visual Studio and Rider project files
 *.csproj
 *.unityproj
