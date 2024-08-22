@@ -1,6 +1,6 @@
 {
   "name": "net.emullen.bootstrapper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "Bootstrapper",
   "description": "A bootstrapping system that allows you to ensure important GameObjects are loaded before game scenes.",
   "unity": "2021.3",
