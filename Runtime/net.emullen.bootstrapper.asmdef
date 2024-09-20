@@ -3,7 +3,7 @@
     "rootNamespace": "EMullen.Bootstrapper",
     "references": [
         "Unity.TextMeshPro",
-        "UnityEditor"
+        "Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

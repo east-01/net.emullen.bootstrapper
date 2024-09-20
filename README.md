@@ -1,4 +1,4 @@
-# Project Name
+# Bootstrapper
 
 ## Table of Contents
 - [Introduction](#introduction)

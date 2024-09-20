@@ -2,9 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System;
-using UnityEditor;
 using System.Linq;
-using JetBrains.Annotations;
+using EMullen.Core;
 
 namespace EMullen.Bootstrapper 
 {
@@ -83,7 +82,6 @@ namespace EMullen.Bootstrapper
 
             Debug.Log("#####################################");
             Debug.Log("###### Beginning bootstrapping ######");
-            Debug.Log("###### Sequence:               ######");
             Debug.Log("###### Bootstrappers:          ######");
             ActiveSequence.Value.bootstrapScenes.ForEach(bootstrapSceneIndex => Debug.Log("###### " + bootstrapSceneIndex + "      ######"));
             Debug.Log("###### Targets:                ######");
@@ -143,6 +141,8 @@ namespace EMullen.Bootstrapper
                 return;
             }
 
+            Debug.Log($"###### Completed bootstrapping in scene \"{bootstrapper.gameObject.scene.name}\" ######");
+
             CurrentBootstrapper = null;
 
             MoveToNextBootstrapper();
@@ -178,6 +178,7 @@ namespace EMullen.Bootstrapper
                         LoadScene(targetSceneIndex, ActiveSequence.Value.targetScenes.Count > 1 ? LoadSceneMode.Additive : LoadSceneMode.Single);
                     }
                 }
+
                 // hidden return warning: There is a return statement in the top if statement, code here may not always run
             }
         }
@@ -216,17 +217,17 @@ namespace EMullen.Bootstrapper
         }
 
         public static string BuildIndexToName(int buildIndex) {
-            if(buildIndex < 0 || buildIndex >= EditorBuildSettings.scenes.Length) {
+            if(buildIndex < 0 || buildIndex >= BuildProcessor.Scenes.Length) {
                 Debug.LogError($"BuildIndexToName Error: Build index \"{buildIndex}\" out of bounds.");
                 return null;
             }
             
-            return EditorBuildSettings.scenes[buildIndex].path;
+            return BuildProcessor.Scenes[buildIndex].path;
         }
 
         public static List<Scene> LoadedScenes { get { 
             List<Scene> loadedScenes = new();
-            EditorBuildSettingsScene[] s = EditorBuildSettings.scenes;
+            BuildSettingsScene[] s = BuildProcessor.Scenes;
             s.ToList().ForEach(s => {
                 Scene scene = SceneManager.GetSceneByPath(s.path);
                 if(scene.isLoaded)
@@ -247,6 +248,7 @@ namespace EMullen.Bootstrapper
         public const string INVLD_SEQ_NO_BOOTSTRAP = "there are no bootstrap scenes.";
         public const string INVLD_SEQ_NO_TARGET = "there are no target scenes.";
         public const string INVLD_SEQ_NO_NECESSARY_BOOTSTRAP = "all bootstrap scenes are marked as only bootstrap once, no scenes to run.";
+
         /// <summary>
         /// Check if a sequence is valid. Checks that there are at least 1 bootstrap and target
         ///   scene, and that each scene's bootstrapper is valid for it's scene type.

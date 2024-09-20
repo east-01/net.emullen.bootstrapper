@@ -15,7 +15,7 @@ namespace EMullen.Bootstrapper
     /// A Bootstrapper component should always exist in every game scene, with non-bootstrapping
     ///   scenes pointing to the bootstrapping scenes that they rely on.
     /// </summary>
-    [Serializable]
+    [Serializable, DefaultExecutionOrder(-99)]
     public class Bootstrapper : MonoBehaviour
     {
 
@@ -88,8 +88,10 @@ namespace EMullen.Bootstrapper
                 UpdateComponentLoadProgress();
             }
 
-            if(BootstrapComplete)
+            if(BootstrapComplete) {
+                BootstrapSequenceManager.Instance.BootstrapperCompleted(this);
                 return;
+            }
 
             if(cacheIBCEveryUpdate)
                 CacheBootstrapComponents();
