@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBootstrapScene: 1
+  onlyBootstrapOnce: 0
   sequence:
     bootstrapScenes: 00000000
     overrideTargetScenesWithOpenScenes: 0
@@ -52,4 +53,5 @@ MonoBehaviour:
     targetSceneToSetActive: 1
   cacheIBCEveryUpdate: 0
   blacklistedGameObjects:
+  - {fileID: 1496734611499645039}
   - {fileID: 0}

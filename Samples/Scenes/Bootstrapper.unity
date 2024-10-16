@@ -255,22 +255,6 @@ PrefabInstance:
       value: Bootstrapper
       objectReference: {fileID: 0}
     - target: {fileID: 2894441432874240193, guid: 17127eb2179affa468de76b1872329ea, type: 3}
-      propertyPath: onlyBootstrapOnce
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2894441432874240193, guid: 17127eb2179affa468de76b1872329ea, type: 3}
-      propertyPath: blacklistedGameObjects.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2894441432874240193, guid: 17127eb2179affa468de76b1872329ea, type: 3}
-      propertyPath: sequence.bootstrapScenes.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2894441432874240193, guid: 17127eb2179affa468de76b1872329ea, type: 3}
-      propertyPath: blacklistedGameObjects.Array.data[0]
-      value: 
-      objectReference: {fileID: 1511720918}
-    - target: {fileID: 2894441432874240193, guid: 17127eb2179affa468de76b1872329ea, type: 3}
       propertyPath: blacklistedGameObjects.Array.data[1]
       value: 
       objectReference: {fileID: 629570704}
@@ -639,11 +623,6 @@ Transform:
   m_Father: {fileID: 629570705}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1511720918 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1496734611499645039, guid: 17127eb2179affa468de76b1872329ea, type: 3}
-  m_PrefabInstance: {fileID: 240103479}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1539270741
 GameObject:
   m_ObjectHideFlags: 0

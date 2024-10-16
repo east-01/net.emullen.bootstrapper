@@ -50,16 +50,22 @@ namespace EMullen.Bootstrapper
                 initStatus = false;
                 return;
             }
-            if(!sequence.IsSequenceValid(out string reason)) {
-                if(reason == BootstrapSequence.INVLD_SEQ_NO_NECESSARY_BOOTSTRAP)
-                    Debug.LogWarning($"Skipped bootstrap sequence since all bootstrappers were marked as run only once.");
-                else
-                    Debug.LogError($"{INIT_ERR} {reason}");
-                initStatus = false;
-                return;
+            
+            if(ActiveSequence == null) {
+                if(!sequence.IsSequenceValid(out string reason)) {
+                    if(reason == BootstrapSequence.INVLD_SEQ_NO_NECESSARY_BOOTSTRAP)
+                        Debug.LogWarning($"Skipped bootstrap sequence since all bootstrappers were marked as run only once.");
+                    else
+                        Debug.LogError($"{INIT_ERR} {reason}");
+                    initStatus = false;
+                    return;
+                }
+
+                ActiveSequence = sequence;
             }
+
             // Load up the proper starting bootstrap scene if this isn't the correct one.
-            if(SceneManager.GetActiveScene().buildIndex != sequence.bootstrapScenes[0]) {
+            if(SceneManager.GetActiveScene().buildIndex != ActiveSequence.Value.bootstrapScenes[0]) {
                 initStatus = false;
                 ActiveSequence = sequence;
                 LoadScene(sequence.bootstrapScenes[0], LoadSceneMode.Single);
@@ -67,14 +73,12 @@ namespace EMullen.Bootstrapper
                 return;
             }
 
-            if(sequence.overrideTargetScenesWithOpenScenes) {
-                sequence.targetScenes.Clear();
-                List<int> targetScenes = new();
-                // Store all scenes that are currently loaded so we can re-load them when the actual bootstrap scene gets loaded
-                LoadedScenes.ForEach(ls => sequence.targetScenes.Add(ls.buildIndex));
-            }            
-
-            ActiveSequence ??= sequence;
+            // if(sequence.overrideTargetScenesWithOpenScenes) {
+            //     sequence.targetScenes.Clear();
+            //     List<int> targetScenes = new();
+            //     // Store all scenes that are currently loaded so we can re-load them when the actual bootstrap scene gets loaded
+            //     LoadedScenes.ForEach(ls => sequence.targetScenes.Add(ls.buildIndex));
+            // }            
             
             SequencePosition = 0;
 

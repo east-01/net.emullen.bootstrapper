@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -72,7 +73,12 @@ namespace EMullen.Bootstrapper.Editor
                     SerializedProperty sp_sceneBuildIndex = sp_buildIndexList.GetArrayElementAtIndex(i);
                     sp_sceneBuildIndex.intValue = EditorGUI.IntField(columns.Item1, sp_sceneBuildIndex.intValue);
 
-                    GUI.Label(columns.Item2, $"{BootstrapSequenceManager.BuildIndexToName(sp_sceneBuildIndex.intValue)}");
+                    string sceneName = String.Join("/", BootstrapSequenceManager.BuildIndexToName(sp_sceneBuildIndex.intValue)
+                    .Replace(".unity", "").Split("/")[^2..]);
+
+
+
+                    GUI.Label(columns.Item2, $"{sceneName}");
 
                     if(selectedTab == 1) {
                         if(GUI.Toggle(columns.Item3, sp_sceneBuildIndex.intValue == sp_activeSceneProperty.intValue, ""))

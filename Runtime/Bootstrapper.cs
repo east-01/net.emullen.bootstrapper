@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using EMullen.Core;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -60,10 +61,17 @@ namespace EMullen.Bootstrapper
 
         private void Awake() 
         {
+            if(sequence.overrideTargetScenesWithOpenScenes) {
+                sequence.targetScenes.Clear();
+                int activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                sequence.targetScenes.Add(activeSceneIndex);
+                sequence.targetSceneToSetActive = activeSceneIndex;
+            }
+
             BootstrapSequenceManager bsm = BootstrapSequenceManager.Instance;
             if(bsm == null) {
-                bsm = new BootstrapSequenceManager(sequence, out bool bmsInitStatus);
-                if(!bmsInitStatus) {
+                bsm = new BootstrapSequenceManager(sequence, out bool bsmInitStatus);
+                if(!bsmInitStatus) {
                     Destroy(gameObject);
                     return;
                 }
