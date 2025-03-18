@@ -30,6 +30,11 @@ namespace EMullen.Bootstrapper
         [SerializeField]
         private bool onlyBootstrapOnce;
         public bool OnlyBootstrapOnce => onlyBootstrapOnce;
+        /// <summary>
+        /// Only bootstrap this scene if the application just started.
+        /// </summary>
+        [SerializeField]
+        private bool onlyBootstrapOnStartup = true;
 
         [SerializeField]
         private BootstrapSequence sequence;
@@ -61,6 +66,12 @@ namespace EMullen.Bootstrapper
 
         private void Awake() 
         {
+            BootstrapSequenceManager.cleanupScenes.ForEach(buildIndex => SceneManager.UnloadSceneAsync(buildIndex));
+            BootstrapSequenceManager.cleanupScenes.Clear();
+
+            if(onlyBootstrapOnStartup && Time.time > 0.02)
+                return;
+
             if(sequence.overrideTargetScenesWithOpenScenes) {
                 sequence.targetScenes.Clear();
                 int activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -97,7 +108,12 @@ namespace EMullen.Bootstrapper
             }
 
             if(BootstrapComplete) {
-                BootstrapSequenceManager.Instance.BootstrapperCompleted(this);
+                if(BootstrapSequenceManager.Instance != null)
+                    BootstrapSequenceManager.Instance.BootstrapperCompleted(this);
+                // else
+                //     SceneManager.UnloadSceneAsync(gameObject.scene);
+
+                gameObject.SetActive(false);
                 return;
             }
 
@@ -106,9 +122,9 @@ namespace EMullen.Bootstrapper
 
             UpdateComponentLoadProgress();
 
-            if(BootstrapComplete) {
-                BootstrapSequenceManager.Instance.BootstrapperCompleted(this);
-            }
+            // if(BootstrapComplete) {
+            //     BootstrapSequenceManager.Instance.BootstrapperCompleted(this);
+            // }
         }
 
         private void CacheBootstrapComponents() 

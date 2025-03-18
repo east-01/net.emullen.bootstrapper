@@ -33,6 +33,7 @@ namespace EMullen.Bootstrapper
         ///   isn't correct in sequence).
         /// </summary>
         public static BootstrapSequence? ActiveSequence { get; private set; }
+        public static Queue<BootstrapSequence> SequenceHistory { get; private set; } = new();
         private static List<int> blacklistedBootstrapScenes = new();
         public static bool IsBlacklistedBootstrapScene(int sceneIndex) => blacklistedBootstrapScenes.Contains(sceneIndex);
 
@@ -43,6 +44,11 @@ namespace EMullen.Bootstrapper
         public bool LoadingTargetScenes { get; private set; }= false;
         private List<int> targetScenesStillLoading = new();
         
+        /// <summary>
+        /// Cleanup scenes from other bootstrap sequences to be cleared by a new one.
+        /// </summary>
+        public static List<int> cleanupScenes = new();
+
         public BootstrapSequenceManager(BootstrapSequence sequence, out bool initStatus) 
         {
             if(Instance != null) {
@@ -50,7 +56,7 @@ namespace EMullen.Bootstrapper
                 initStatus = false;
                 return;
             }
-            
+
             if(ActiveSequence == null) {
                 if(!sequence.IsSequenceValid(out string reason)) {
                     if(reason == BootstrapSequence.INVLD_SEQ_NO_NECESSARY_BOOTSTRAP)
@@ -61,7 +67,9 @@ namespace EMullen.Bootstrapper
                     return;
                 }
 
+                BLog.Highlight($"Initiating new sequence");
                 ActiveSequence = sequence;
+                SequenceHistory.Enqueue(sequence);
             }
 
             // Load up the proper starting bootstrap scene if this isn't the correct one.
@@ -165,26 +173,53 @@ namespace EMullen.Bootstrapper
 
                     LoadScene(nextSceneBuildIndex, LoadSceneMode.Single);
                 } else {
-                    Debug.Log("#####################################");
-                    Debug.Log("###### Finishing bootstrapping ######");
-                    Debug.Log("#####################################");
-
-                    targetScenesStillLoading.Clear();
-
-                    LoadingTargetScenes = true;
-
-                    if(ActiveSequence.Value.targetScenes.Count > 1) {
-                        UnloadScene(SceneManager.GetActiveScene().buildIndex);
-                    }
-
-                    foreach(int targetSceneIndex in ActiveSequence.Value.targetScenes) {
-                        targetScenesStillLoading.Add(targetSceneIndex);
-                        LoadScene(targetSceneIndex, ActiveSequence.Value.targetScenes.Count > 1 ? LoadSceneMode.Additive : LoadSceneMode.Single);
-                    }
+                    FinishBootstrapping();
                 }
 
                 // hidden return warning: There is a return statement in the top if statement, code here may not always run
             }
+        }
+
+        public void FinishBootstrapping(bool aborted = false) {
+            Debug.Log("#####################################");
+            Debug.Log("###### Finishing bootstrapping ######");
+            Debug.Log("#####################################");
+
+            targetScenesStillLoading.Clear();
+
+            // If the bootstrap sequence was aborted we need to make sure it's static instances
+            //   are cleared. This is also done after all of the target scenes are loaded.
+            if(aborted || ActiveSequence.Value.targetScenes.Count == 0) {
+                Instance = null;
+                ActiveSequence = null;
+                UnloadScene(SceneManager.GetActiveScene().buildIndex);
+                return;
+            }
+
+            LoadingTargetScenes = true;
+
+            if(ActiveSequence.Value.targetScenes.Count > 1) {
+                UnloadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+
+            foreach(int targetSceneIndex in ActiveSequence.Value.targetScenes) {
+                targetScenesStillLoading.Add(targetSceneIndex);
+                LoadScene(targetSceneIndex, ActiveSequence.Value.targetScenes.Count > 1 ? LoadSceneMode.Additive : LoadSceneMode.Single);
+            }
+        }
+
+        /// <summary>
+        /// Used by bootstrappers to exit the sequence prematurely.
+        /// An example of this is networked applications- a networking bootstrapper will join the
+        ///   lobby and then the server will handle scene loading, this means the sequence must be
+        ///   aborted.
+        /// </summary>
+        public void AbortSequence(string reason = null) 
+        {
+            if(reason != null)
+                Debug.LogWarning("Aborted bootstrap sequence for reason: " + reason);
+
+            FinishBootstrapping(true);
         }
 
         private void SceneManager_SceneLoaded(Scene scene, LoadSceneMode loadSceneMode) 
@@ -217,7 +252,10 @@ namespace EMullen.Bootstrapper
 
         private void UnloadScene(int buildindex) 
         {
-            SceneManager.UnloadSceneAsync(buildindex);
+            if(LoadedScenes.Count > 1)
+                SceneManager.UnloadSceneAsync(buildindex);
+            else
+                cleanupScenes.Add(buildindex);
         }
 
         public static string BuildIndexToName(int buildIndex) {
@@ -261,15 +299,18 @@ namespace EMullen.Bootstrapper
         ///   is valid</param>
         /// <returns>Is the sequence valid?</returns>
         public bool IsSequenceValid(out string reason) {
-            
+            if(BootstrapSequenceManager.SequenceHistory.Count > 0 && BootstrapSequenceManager.SequenceHistory.Peek().Equals(this)) {
+                reason = "Previous sequence matches.";
+                return false;
+            }
             if(bootstrapScenes == null || bootstrapScenes.Count == 0) {
                 reason = INVLD_SEQ_NO_BOOTSTRAP;
                 return false;
             }
-            if(targetScenes == null || targetScenes.Count == 0) {
-                reason = INVLD_SEQ_NO_TARGET;
-                return false;
-            }
+            // if(targetScenes == null || targetScenes.Count == 0) {
+            //     reason = INVLD_SEQ_NO_TARGET;
+            //     return false;
+            // }
             bool willAnyBootstrapsRun = false;
             foreach(int bootstrapSceneBuildIndex in bootstrapScenes) {
                 if(!BootstrapSequenceManager.IsBlacklistedBootstrapScene(bootstrapSceneBuildIndex)) {
@@ -284,6 +325,23 @@ namespace EMullen.Bootstrapper
 
             reason = "";
             return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(obj is BootstrapSequence toCompare)
+                return bootstrapScenes.Equals(toCompare.bootstrapScenes) && targetScenes.Equals(toCompare.targetScenes);
+            return false;
+        }
+
+        public override readonly int GetHashCode()
+        {
+            unchecked {
+                int hash = 17;
+                hash = hash * 23 + (bootstrapScenes?.GetHashCode() ?? 0);
+                hash = hash * 23 + (targetScenes?.GetHashCode() ?? 0);
+                return hash;
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using EMullen.Core;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,6 +29,10 @@ namespace EMullen.Bootstrapper.Editor
         public override void OnInspectorGUI() 
         {
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
+            if(BootstrapSequenceManager.ActiveSequence.HasValue) {
+                CustomEditorUtils.CreateNote($"Active sequence: \nBootstrappers: {string.Join(", ", BootstrapSequenceManager.ActiveSequence.Value.bootstrapScenes)}\nTarget scenes: {string.Join(", ", BootstrapSequenceManager.ActiveSequence.Value.targetScenes)}");
+            }
 
             sp_isBootstrapScene.boolValue = EditorGUILayout.Toggle("Is bootstrap scene", sp_isBootstrapScene.boolValue);
 

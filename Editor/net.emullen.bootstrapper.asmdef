@@ -3,7 +3,8 @@
     "rootNamespace": "EMullen.Bootstrapper.Editor",
     "references": [
         "UnityEditor",
-        "Bootstrapper"
+        "Bootstrapper",
+        "Core"
     ],
     "includePlatforms": ["Editor"],
     "excludePlatforms": [],
