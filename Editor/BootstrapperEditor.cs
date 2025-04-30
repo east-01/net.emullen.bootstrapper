@@ -1,4 +1,5 @@
 using EMullen.Core;
+using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,7 +32,13 @@ namespace EMullen.Bootstrapper.Editor
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
             if(BootstrapSequenceManager.ActiveSequence.HasValue) {
-                CustomEditorUtils.CreateNote($"Active sequence: \nBootstrappers: {string.Join(", ", BootstrapSequenceManager.ActiveSequence.Value.bootstrapScenes)}\nTarget scenes: {string.Join(", ", BootstrapSequenceManager.ActiveSequence.Value.targetScenes)}");
+                Bootstrapper currentBootstrapper = BootstrapSequenceManager.Instance.CurrentBootstrapper;
+                bool isCurrent = target as Bootstrapper == currentBootstrapper;
+                string currentLine = $"Is current bootstrapper: {isCurrent}";
+                if(!isCurrent)
+                    currentLine += $" Current: \"{currentBootstrapper}\"";
+
+                CustomEditorUtils.CreateNote($"{currentLine}\nActive sequence: \nBootstrappers: {string.Join(", ", BootstrapSequenceManager.ActiveSequence.Value.bootstrapScenes)}\nTarget scenes: {string.Join(", ", BootstrapSequenceManager.ActiveSequence.Value.targetScenes)}");
             }
 
             sp_isBootstrapScene.boolValue = EditorGUILayout.Toggle("Is bootstrap scene", sp_isBootstrapScene.boolValue);

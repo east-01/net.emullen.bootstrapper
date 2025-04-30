@@ -165,7 +165,7 @@ namespace EMullen.Bootstrapper
 
                     SequencePosition++;
                     int nextSceneBuildIndex = ActiveSequence.Value.bootstrapScenes[SequencePosition];
-                    if(blacklistedBootstrapScenes.Contains(nextSceneBuildIndex)) {
+                    if(IsBlacklistedBootstrapScene(nextSceneBuildIndex)) {
                         SequenceWarning($"The bootstrapper in scene \"{bootstrapper.gameObject.scene.name}\" is set to only bootstrap once. Skipping.");
                         MoveToNextBootstrapper();
                         return;
@@ -330,7 +330,7 @@ namespace EMullen.Bootstrapper
         public override bool Equals(object obj)
         {
             if(obj is BootstrapSequence toCompare)
-                return bootstrapScenes.Equals(toCompare.bootstrapScenes) && targetScenes.Equals(toCompare.targetScenes);
+                return bootstrapScenes.SequenceEqual(toCompare.bootstrapScenes) && targetScenes.SequenceEqual(toCompare.targetScenes);
             return false;
         }
 

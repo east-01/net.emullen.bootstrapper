@@ -30,11 +30,11 @@ namespace EMullen.Bootstrapper
         [SerializeField]
         private bool onlyBootstrapOnce;
         public bool OnlyBootstrapOnce => onlyBootstrapOnce;
-        /// <summary>
-        /// Only bootstrap this scene if the application just started.
-        /// </summary>
-        [SerializeField]
-        private bool onlyBootstrapOnStartup = true;
+        // /// <summary>
+        // /// Only bootstrap this scene if the application just started.
+        // /// </summary>
+        // [SerializeField]
+        // private bool onlyBootstrapOnStartup = true;
 
         [SerializeField]
         private BootstrapSequence sequence;
@@ -69,8 +69,8 @@ namespace EMullen.Bootstrapper
             BootstrapSequenceManager.cleanupScenes.ForEach(buildIndex => SceneManager.UnloadSceneAsync(buildIndex));
             BootstrapSequenceManager.cleanupScenes.Clear();
 
-            if(onlyBootstrapOnStartup && Time.time > 0.02)
-                return;
+            // if(onlyBootstrapOnStartup && Time.time > 0.02)
+            //     return;
 
             if(sequence.overrideTargetScenesWithOpenScenes) {
                 sequence.targetScenes.Clear();
